@@ -1,9 +1,9 @@
-#ifndef LIS_SDO_HIGH
-#define LIS_WRITE_ADDR 0x38
-#define LIS_READ_ADDR 0x39
-#else
+#ifdef LIS_SDO_HIGH
 #define LIS_WRITE_ADDR 0x3a
 #define LIS_READ_ADDR 0x3b
+#else
+#define LIS_WRITE_ADDR 0x38
+#define LIS_READ_ADDR 0x39
 #endif
 
 #define LIS_WHOAMI 0xf

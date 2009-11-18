@@ -50,3 +50,15 @@ lis_rx (void)
 {
   return lis_rread (LIS_OX);
 }
+
+int8_t
+lis_ry (void)
+{
+  return lis_rread (LIS_OY);
+}
+
+int8_t
+lis_rz (void)
+{
+  return lis_rread (LIS_OZ);
+}
