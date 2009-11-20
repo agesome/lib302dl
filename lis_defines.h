@@ -7,7 +7,7 @@
 #endif
 
 #define LIS_WHOAMI 0xf
-#define LIS_WHOAMI_VALUE 0x73
+#define LIS_WHOAMI_VALUE 0x3b
 
 #define LIS_CR1 0x20
 #define LIS_DR 7
