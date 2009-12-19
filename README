@@ -1,1 +1,4 @@
-lib302dl is a C library for LIS302DL accelerometer intended to be used with Peter Fleury's I2C library and avr-gcc/avr-libc. It supports not all functionality of the accelerometer, just what I needed. Library is made public in hope that it may be useful.
+lib302dl is a C library for LIS302DL accelerometer intended to be used with Peter Fleury's I2C library and avr-gcc/avr-libc.
+It does not fully support all functions of the accelerometer, just what I needed. Library is made public in hope that it may be useful.
+
+lib302dl is licensed under the GNU Lesser General Public License, see file COPYING.LESSER. 

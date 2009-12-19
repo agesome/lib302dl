@@ -15,10 +15,36 @@
       You should have received a copy of the GNU Lesser General Public License
       along with lib302dl.  If not, see <http://www.gnu.org/licenses/>. */
 
-void lis_rwrite (uint8_t reg, uint8_t value);
-int8_t lis_rread (uint8_t reg);
-uint8_t lis_initialize (uint8_t high_datarate, uint8_t dopowerup,
-			uint8_t setfullscale);
-int8_t lis_rx (void);
-int8_t lis_ry (void);
-int8_t lis_rz (void);
+/* compatibility functions; library was intended to be used with Peter Fleury's i2c library, but should be useable with anything else */
+#include <stdio.h>
+#include "i2cmaster.h"
+
+void
+twi_initialize (void)
+{
+  i2c_init ();
+}
+
+void
+twi_stop (void)
+{
+  i2c_stop ();
+}
+
+void
+twi_start (uint8_t addr)
+{
+  i2c_start_wait (addr);
+}
+
+uint8_t
+twi_write (uint8_t data)
+{
+  return i2c_write (data);
+}
+
+uint8_t
+twi_read (void)
+{
+  return i2c_readNak ();
+}
