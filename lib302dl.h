@@ -15,10 +15,14 @@
       You should have received a copy of the GNU Lesser General Public License
       along with lib302dl.  If not, see <http://www.gnu.org/licenses/>. */
 
+/* write to a specific register on the accelerometer */
 void lis_rwrite (uint8_t reg, uint8_t value);
+/* read a spicific register from the accelerometer */
 int8_t lis_rread (uint8_t reg);
+/* initialize the accelerometer for operation */
 uint8_t lis_initialize (uint8_t high_datarate, uint8_t dopowerup,
 			uint8_t setfullscale);
+/* following three lis_r<axis> functions read acceleration on corresponding axis from the accelerometer */
 int8_t lis_rx (void);
 int8_t lis_ry (void);
 int8_t lis_rz (void);
