@@ -26,3 +26,4 @@ uint8_t lis_initialize (uint8_t high_datarate, uint8_t dopowerup,
 int8_t lis_rx (void);
 int8_t lis_ry (void);
 int8_t lis_rz (void);
+int16_t lis_rxa (void);

@@ -20,6 +20,8 @@
 #include "lib302dl_compat.h"
 #include "lib302dl_defines.h"
 
+uint8_t fullscale = 0;
+
 /* write register */
 void
 lis_rwrite (uint8_t reg, uint8_t value)
@@ -57,7 +59,10 @@ lis_initialize (uint8_t high_datarate, uint8_t dopowerup,
   if (high_datarate)
     lis_rwrite (LIS_CR1, _BV (LIS_DR));
   if (setfullscale)
-    lis_rwrite (LIS_CR1, _BV (LIS_FS));
+    {
+      fullscale = 1;
+      lis_rwrite (LIS_CR1, _BV (LIS_FS));
+    }      
 
   return 0;
 }
@@ -78,4 +83,15 @@ int8_t
 lis_rz (void)
 {
   return lis_rread (LIS_OZ);
+}
+
+int16_t
+lis_rxa (void)
+{
+  int8_t x = lis_rx ();
+
+  if (fullscale)
+    return lis_rx * LIS_SENSIVITY_FS1;
+  else
+    return lis_rx * LIS_SENSIVITY_FS0;
 }

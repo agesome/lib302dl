@@ -54,3 +54,10 @@
 #define LIS_OX 0x29
 #define LIS_OY 0x2b
 #define LIS_OZ 0x2d
+
+/* in mg/digit */
+#define LIS_SENSIVITY_FS1 72
+#define LIS_SENSIVITY_FS0 18
+#define LIS_ZOFF_FS1 60
+#define LIS_ZOFF_FS0 40
+
