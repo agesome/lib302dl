@@ -88,10 +88,27 @@ lis_rz (void)
 int16_t
 lis_rxa (void)
 {
-  int8_t x = lis_rx ();
-
   if (fullscale)
-    return lis_rx * LIS_SENSIVITY_FS1;
+    return lis_rx() * LIS_SENSIVITY_FS1;
   else
-    return lis_rx * LIS_SENSIVITY_FS0;
+    return lis_rx() * LIS_SENSIVITY_FS0;
 }
+
+int16_t
+lis_rya (void)
+{
+  if (fullscale)
+    return lis_ry() * LIS_SENSIVITY_FS1;
+  else
+    return lis_ry() * LIS_SENSIVITY_FS0;
+}
+
+int16_t
+lis_rza (void)
+{
+  if (fullscale)
+    return lis_rz() * LIS_SENSIVITY_FS1;
+  else
+    return lis_rz() * LIS_SENSIVITY_FS0;
+}
+

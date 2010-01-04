@@ -27,3 +27,5 @@ int8_t lis_rx (void);
 int8_t lis_ry (void);
 int8_t lis_rz (void);
 int16_t lis_rxa (void);
+int16_t lis_rya (void);
+int16_t lis_rza (void);
