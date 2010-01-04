@@ -17,8 +17,8 @@
 
 #include <stdio.h>
 #include <avr/io.h>
-#include "lib302dl_compat.h"
-#include "lib302dl_defines.h"
+#include "compat.c"
+#include "defines.h"
 
 uint8_t fullscale = 0;
 
