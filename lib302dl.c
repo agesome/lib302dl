@@ -47,23 +47,24 @@ lis_rread (uint8_t reg)
   return recv;
 }
 
-uint8_t
 lis_initialize (uint8_t high_datarate, uint8_t dopowerup,
 		uint8_t setfullscale)
 {
+  uint8_t mask = 0;
+  
   if (lis_rread (LIS_WHOAMI) != LIS_WHOAMI_VALUE)
     return 1;
 
-  if (dopowerup)
-    lis_rwrite (LIS_CR1, _BV (LIS_PD));
-  if (high_datarate)
-    lis_rwrite (LIS_CR1, _BV (LIS_DR));
   if (setfullscale)
     {
       fullscale = 1;
-      lis_rwrite (LIS_CR1, _BV (LIS_FS));
-    }      
-
+      mask |= _BV(LIS_FS);
+    }
+  if (high_datarate)
+    mask |= _BV (LIS_DR);
+  if (dopowerup)
+    mask |= _BV (LIS_PD);
+  lis_rwrite (LIS_CR1, mask);
   return 0;
 }
 
