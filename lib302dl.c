@@ -22,7 +22,7 @@
 #include "lib302dl.h"
 
 /* Register, Bit */
-#define ISSET(R, B) (R & (~R | 1<<B))
+#define ISSET(R, B) (R & (~R | _BV(B))
 
 uint8_t fullscale = 0;
 /* indicates whether to check if accelerometer has new data before reading */
@@ -57,7 +57,7 @@ lis_rread (uint8_t reg)
 /* initialize the accelerometer, call it first of all */
 uint8_t
 lis_initialize (uint8_t high_datarate, uint8_t dopowerup,
-		uint8_t setfullscale, uint8_t check)
+		uint8_t setfullscale, uint8_t check, uint8_t filter)
 {
   uint8_t ctrl_reg = 0;
   
@@ -74,7 +74,11 @@ lis_initialize (uint8_t high_datarate, uint8_t dopowerup,
   if (dopowerup)
     ctrl_reg |= _BV (LIS_PD);
   lis_rwrite (LIS_CR1, ctrl_reg);
-  
+  if (filter)
+  	{
+  	  ctrl_reg = _BV(LIS_FDS);
+  		lis_rwrite (LIS_CR2, ctrl_reg);
+		}
   return 0;
 }
 
