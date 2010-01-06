@@ -50,6 +50,13 @@
 
 #define LIS_SR 0x27
 #define LIS_ZYXDA 3
+#define LIS_ZDA 2
+#define LIS_YDA 1
+#define LIS_XDA 0
+#define LIS_ZYXOR 7
+#define LIS_XOR 4
+#define LIS_YOR 5
+#define LIS_ZOR 6
 
 #define LIS_OX 0x29
 #define LIS_OY 0x2b

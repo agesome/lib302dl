@@ -21,6 +21,8 @@
 #include "defines.h"
 
 uint8_t fullscale = 0;
+/* indicates whether to check if accelerometer has new data before reading */
+uint8_t check_mode = 0;
 
 /* write register */
 void
@@ -32,6 +34,7 @@ lis_rwrite (uint8_t reg, uint8_t value)
   twi_stop ();
 }
 
+/* read register */
 int8_t
 lis_rread (uint8_t reg)
 {
@@ -47,24 +50,26 @@ lis_rread (uint8_t reg)
   return recv;
 }
 
+/* initialize the accelerometer, call it first of all */
 lis_initialize (uint8_t high_datarate, uint8_t dopowerup,
-		uint8_t setfullscale)
+		uint8_t setfullscale, uint8_t check)
 {
-  uint8_t mask = 0;
+  uint8_t ctrl_reg = 0;
   
   if (lis_rread (LIS_WHOAMI) != LIS_WHOAMI_VALUE)
     return 1;
-
+  check_mode = check;
   if (setfullscale)
     {
       fullscale = 1;
-      mask |= _BV(LIS_FS);
+      ctrl_reg |= _BV(LIS_FS);
     }
   if (high_datarate)
-    mask |= _BV (LIS_DR);
+    ctrl_reg |= _BV (LIS_DR);
   if (dopowerup)
-    mask |= _BV (LIS_PD);
-  lis_rwrite (LIS_CR1, mask);
+    ctrl_reg |= _BV (LIS_PD);
+  lis_rwrite (LIS_CR1, ctrl_reg);
+  
   return 0;
 }
 
@@ -89,27 +94,75 @@ lis_rz (void)
 int16_t
 lis_rxa (void)
 {
+  if (check_mode == LIS_NOCHECK)
+    goto read;
+  else if (lis_rread (LIS_SR, LIS_XDA) && lis_rread (LIS_SR, LIS_XOR))
+    goto read;
+  goto error;
+ read:
   if (fullscale)
     return lis_rx() * LIS_SENSIVITY_FS1;
   else
     return lis_rx() * LIS_SENSIVITY_FS0;
+ error:
+  return LIS_ERROR;
 }
 
 int16_t
 lis_rya (void)
 {
+  if (check_mode == LIS_NOCHECK)
+    goto read;
+  else if (lis_rread (LIS_SR, LIS_YDA) && lis_rread (LIS_SR, LIS_YOR))
+    goto read;
+  goto error;
+ read:
   if (fullscale)
     return lis_ry() * LIS_SENSIVITY_FS1;
   else
     return lis_ry() * LIS_SENSIVITY_FS0;
+ error:
+  return LIS_ERROR;
 }
 
 int16_t
 lis_rza (void)
 {
+  if (check_mode == LIS_NOCHECK)
+    goto read;
+  else if (lis_rread (LIS_SR, LIS_ZDA) && lis_rread (LIS_SR, LIS_ZOR))
+    goto read;
+  goto error;
+ read:
   if (fullscale)
     return lis_rz() * LIS_SENSIVITY_FS1;
   else
     return lis_rz() * LIS_SENSIVITY_FS0;
+ error:
+  return LIS_ERROR;
+}
+
+uint8_t
+lis_mrx (void)
+{
+  if (lis_rread (LIS_SR, LIS_XDA) && lis_rread (LIS_SR, LIS_XOR))
+    return 1;
+  return 0;
+}
+
+uint8_t
+lis_mry (void)
+{
+  if (lis_rread (LIS_SR, LIS_YDA) && lis_rread (LIS_SR, LIS_YOR))
+    return 1;
+  return 0;
+}
+
+uint8_t
+lis_mrz (void)
+{
+  if (lis_rread (LIS_SR, LIS_ZDA) && lis_rread (LIS_SR, LIS_ZOR))
+    return 1;
+  return 0;
 }
 
