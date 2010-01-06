@@ -19,6 +19,10 @@
 #include <avr/io.h>
 #include "compat.c"
 #include "defines.h"
+#include "lib302dl.h"
+
+/* Register, Bit */
+#define ISSET(R, B) (R & (~R | 1<<B))
 
 uint8_t fullscale = 0;
 /* indicates whether to check if accelerometer has new data before reading */
@@ -51,6 +55,7 @@ lis_rread (uint8_t reg)
 }
 
 /* initialize the accelerometer, call it first of all */
+uint8_t
 lis_initialize (uint8_t high_datarate, uint8_t dopowerup,
 		uint8_t setfullscale, uint8_t check)
 {
@@ -94,9 +99,9 @@ lis_rz (void)
 int16_t
 lis_rxa (void)
 {
-  if (check_mode == LIS_NOCHECK)
+  if (check_mode == LIS_NORCHECK)
     goto read;
-  else if (lis_rread (LIS_SR, LIS_XDA) && lis_rread (LIS_SR, LIS_XOR))
+  else if (lis_mrx ())
     goto read;
   goto error;
  read:
@@ -111,9 +116,9 @@ lis_rxa (void)
 int16_t
 lis_rya (void)
 {
-  if (check_mode == LIS_NOCHECK)
+  if (check_mode == LIS_NORCHECK)
     goto read;
-  else if (lis_rread (LIS_SR, LIS_YDA) && lis_rread (LIS_SR, LIS_YOR))
+  else if (lis_mry ())
     goto read;
   goto error;
  read:
@@ -128,9 +133,9 @@ lis_rya (void)
 int16_t
 lis_rza (void)
 {
-  if (check_mode == LIS_NOCHECK)
+  if (check_mode == LIS_NORCHECK)
     goto read;
-  else if (lis_rread (LIS_SR, LIS_ZDA) && lis_rread (LIS_SR, LIS_ZOR))
+  else if (lis_mrz ())
     goto read;
   goto error;
  read:
@@ -145,7 +150,8 @@ lis_rza (void)
 uint8_t
 lis_mrx (void)
 {
-  if (lis_rread (LIS_SR, LIS_XDA) && lis_rread (LIS_SR, LIS_XOR))
+  int8_t reg = lis_rread (LIS_SR);
+  if (ISSET(reg, LIS_XDA) && ISSET(reg, LIS_XOR))
     return 1;
   return 0;
 }
@@ -153,7 +159,8 @@ lis_mrx (void)
 uint8_t
 lis_mry (void)
 {
-  if (lis_rread (LIS_SR, LIS_YDA) && lis_rread (LIS_SR, LIS_YOR))
+  int8_t reg = lis_rread (LIS_SR);
+  if (ISSET(reg, LIS_YDA) && ISSET(reg, LIS_YOR))
     return 1;
   return 0;
 }
@@ -161,7 +168,8 @@ lis_mry (void)
 uint8_t
 lis_mrz (void)
 {
-  if (lis_rread (LIS_SR, LIS_ZDA) && lis_rread (LIS_SR, LIS_ZOR))
+  int8_t reg = lis_rread (LIS_SR);
+  if (ISSET(reg, LIS_ZDA) && ISSET(reg, LIS_ZOR))
     return 1;
   return 0;
 }
