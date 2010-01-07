@@ -7,13 +7,14 @@
       the Free Software Foundation, either version 3 of the License, or
       (at your option) any later version.
       
-      Foobar is distributed in the hope that it will be useful,
+      lib302dl is distributed in the hope that it will be useful,
       but WITHOUT ANY WARRANTY; without even the implied warranty of
       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
       GNU General Public License for more details.
       
       You should have received a copy of the GNU Lesser General Public License
-      along with lib302dl.  If not, see <http://www.gnu.org/licenses/>. */
+      along with lib302dl.  If not, see <http://www.gnu.org/licenses/>. 
+*/
 
 /* compatibility functions; library was intended to be used with Peter Fleury's i2c library, but should be useable with anything else */
 #include <stdio.h>
