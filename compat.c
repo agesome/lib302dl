@@ -35,7 +35,7 @@ twi_stop (void)
 void
 twi_start (uint8_t addr)
 {
-  i2c_start_wait (addr);
+  i2c_start (addr);
 }
 
 uint8_t

@@ -26,8 +26,6 @@
 #define ISSET(R, B) (R & (~R | _BV(B))
 
 uint8_t fullscale = 0;
-/* indicates whether to check if accelerometer has new data before reading */
-uint8_t check_mode = 0;
 
 /* write register */
 void
@@ -58,13 +56,12 @@ lis_rread (uint8_t reg)
 /* initialize the accelerometer, call it first of all */
 uint8_t
 lis_initialize (uint8_t high_datarate, uint8_t dopowerup,
-		uint8_t setfullscale, uint8_t check, uint8_t filter)
+		uint8_t setfullscale, uint8_t filter)
 {
   uint8_t ctrl_reg = 0;
   
   if (lis_rread (LIS_WHOAMI) != LIS_WHOAMI_VALUE)
     return 1;
-  check_mode = check;
   if (setfullscale)
     {
       fullscale = 1;
@@ -76,10 +73,10 @@ lis_initialize (uint8_t high_datarate, uint8_t dopowerup,
     ctrl_reg |= _BV (LIS_PD);
   lis_rwrite (LIS_CR1, ctrl_reg);
   if (filter)
-  	{
-  	  ctrl_reg = _BV(LIS_FDS);
-  		lis_rwrite (LIS_CR2, ctrl_reg);
-		}
+    {
+      ctrl_reg = _BV(LIS_FDS);
+      lis_rwrite (LIS_CR2, ctrl_reg);
+    }
   return 0;
 }
 
@@ -104,78 +101,26 @@ lis_rz (void)
 int16_t
 lis_rxa (void)
 {
-  if (check_mode == LIS_NORCHECK)
-    goto read;
-  else if (lis_mrx ())
-    goto read;
-  goto error;
- read:
   if (fullscale)
     return lis_rx() * LIS_SENSIVITY_FS1;
   else
     return lis_rx() * LIS_SENSIVITY_FS0;
- error:
-  return LIS_ERROR;
 }
 
 int16_t
 lis_rya (void)
 {
-  if (check_mode == LIS_NORCHECK)
-    goto read;
-  else if (lis_mry ())
-    goto read;
-  goto error;
- read:
   if (fullscale)
     return lis_ry() * LIS_SENSIVITY_FS1;
   else
     return lis_ry() * LIS_SENSIVITY_FS0;
- error:
-  return LIS_ERROR;
 }
 
 int16_t
 lis_rza (void)
 {
-  if (check_mode == LIS_NORCHECK)
-    goto read;
-  else if (lis_mrz ())
-    goto read;
-  goto error;
- read:
   if (fullscale)
     return lis_rz() * LIS_SENSIVITY_FS1;
   else
     return lis_rz() * LIS_SENSIVITY_FS0;
- error:
-  return LIS_ERROR;
 }
-
-uint8_t
-lis_mrx (void)
-{
-  int8_t reg = lis_rread (LIS_SR);
-  if (ISSET(reg, LIS_XDA) && ISSET(reg, LIS_XOR))
-    return 1;
-  return 0;
-}
-
-uint8_t
-lis_mry (void)
-{
-  int8_t reg = lis_rread (LIS_SR);
-  if (ISSET(reg, LIS_YDA) && ISSET(reg, LIS_YOR))
-    return 1;
-  return 0;
-}
-
-uint8_t
-lis_mrz (void)
-{
-  int8_t reg = lis_rread (LIS_SR);
-  if (ISSET(reg, LIS_ZDA) && ISSET(reg, LIS_ZOR))
-    return 1;
-  return 0;
-}
-

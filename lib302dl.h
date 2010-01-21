@@ -22,7 +22,7 @@ void lis_rwrite (uint8_t reg, uint8_t value);
 int8_t lis_rread (uint8_t reg);
 /* initialize the accelerometer for operation */
 uint8_t lis_initialize (uint8_t high_datarate, uint8_t dopowerup,
-			uint8_t setfullscale, uint8_t check, uint8_t filter);
+			uint8_t setfullscale, uint8_t filter);
 int8_t lis_rx (void);
 int8_t lis_ry (void);
 int8_t lis_rz (void);
@@ -30,19 +30,3 @@ int8_t lis_rz (void);
 int16_t lis_rxa (void);
 int16_t lis_rya (void);
 int16_t lis_rza (void);
-
-uint8_t lis_mrx (void);
-uint8_t lis_mry (void);
-uint8_t lis_mrz (void);
-
-uint8_t lis_mrx (void);
-uint8_t lis_mry (void);
-uint8_t lis_mrz (void);
-
-enum checks
-  {
-    LIS_RCHECK,
-    LIS_NORCHECK
-  };
-/* maximum acceleration value in fullscale mode is around 10000 milli g, so this is usable */
-#define LIS_ERROR 15000
