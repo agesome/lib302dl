@@ -28,25 +28,30 @@
 uint8_t fullscale = 0;
 
 /* write register */
-void
+int8_t
 lis_rwrite (uint8_t reg, uint8_t value)
 {
-  twi_start (LIS_WRITE_ADDR);
-  twi_write (reg);
-  twi_write (value);
+  if (twi_start (LIS_WRITE_ADDR))
+    return 1;
+  if (twi_write (reg) || twi_write (value))
+    return 1;
   twi_stop ();
+  return 0;
 }
 
 /* read register */
-int8_t
+uint8_t
 lis_rread (uint8_t reg)
 {
-  int8_t recv;
+  uint8_t recv;
 
-  twi_start (LIS_WRITE_ADDR);
-  twi_write (reg);
+  if (twi_start (LIS_WRITE_ADDR))
+    return 1;
+  if (twi_write (reg))
+    return 1;
   twi_stop ();
-  twi_start (LIS_READ_ADDR);
+  if (twi_start (LIS_READ_ADDR))
+    return 1;
   recv = twi_read ();
   twi_stop ();
 
@@ -58,10 +63,14 @@ uint8_t
 lis_initialize (uint8_t high_datarate, uint8_t dopowerup,
 		uint8_t setfullscale, uint8_t filter)
 {
-  uint8_t ctrl_reg = 0;
-  
-  if (lis_rread (LIS_WHOAMI) != LIS_WHOAMI_VALUE)
-    return 1;
+  uint8_t ctrl_reg = 0, rc;
+
+  rc = lis_rread (LIS_WHOAMI);
+  if (rc != LIS_WHOAMI_VALUE)
+    {
+      twi_stop ();
+      return 1;
+    }
   if (setfullscale)
     {
       fullscale = 1;
@@ -71,11 +80,19 @@ lis_initialize (uint8_t high_datarate, uint8_t dopowerup,
     ctrl_reg |= _BV (LIS_DR);
   if (dopowerup)
     ctrl_reg |= _BV (LIS_PD);
-  lis_rwrite (LIS_CR1, ctrl_reg);
+  if (lis_rwrite (LIS_CR1, ctrl_reg))
+    {
+      twi_stop ();
+      return 1;
+    }
   if (filter)
     {
       ctrl_reg = _BV(LIS_FDS);
-      lis_rwrite (LIS_CR2, ctrl_reg);
+      if (lis_rwrite (LIS_CR2, ctrl_reg))
+	{
+	  twi_stop ();
+	  return 1;
+	}
     }
   return 0;
 }

@@ -21,21 +21,15 @@
 #include "i2cmaster.h"
 
 void
-twi_initialize (void)
-{
-  i2c_init ();
-}
-
-void
 twi_stop (void)
 {
   i2c_stop ();
 }
 
-void
+int8_t
 twi_start (uint8_t addr)
 {
-  i2c_start (addr);
+  return i2c_start (addr);
 }
 
 uint8_t
