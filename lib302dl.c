@@ -71,6 +71,7 @@ lis_initialize (uint8_t high_datarate, uint8_t dopowerup,
       twi_stop ();
       return 1;
     }
+  lis_rwrite (LIS_CR2, (1 << 6));
   if (setfullscale)
     {
       fullscale = 1;
